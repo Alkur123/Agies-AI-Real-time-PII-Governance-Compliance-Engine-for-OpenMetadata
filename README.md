@@ -105,20 +105,7 @@ Agies AI is an **AI-powered governance engine** that plugs directly into OpenMet
 
 ---
 
-## 📸 Screenshots
 
-<table>
-  <tr>
-    <td align="center"><img src="Docs/PII_block.png" alt="PII Block Decision" width="400"/><br/><sub><b>Real-time PII Query Block</b></sub></td>
-    <td align="center"><img src="Docs/Safe_query.png" alt="Safe Query Allow" width="400"/><br/><sub><b>Safe Query — Allowed</b></sub></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="Docs/Data_catalog.png" alt="Data Catalog Scan" width="400"/><br/><sub><b>Catalog Scan — Risk Levels</b></sub></td>
-    <td align="center"><img src="Docs/compialence_%20report.png" alt="Compliance Report" width="400"/><br/><sub><b>Board-Ready Compliance Report</b></sub></td>
-  </tr>
-</table>
-
----
 
 ## 🔗 How We Utilize OpenMetadata
 
