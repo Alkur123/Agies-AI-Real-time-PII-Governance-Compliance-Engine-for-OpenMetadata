@@ -5,6 +5,12 @@
 [![GDPR](https://img.shields.io/badge/Regulation-GDPR-3b82f6?style=flat-square)]()
 [![HIPAA](https://img.shields.io/badge/Regulation-HIPAA-8b5cf6?style=flat-square)]()
 [![PCI DSS](https://img.shields.io/badge/Regulation-PCI_DSS_v4.0-ef4444?style=flat-square)]()
+[![Functional](https://img.shields.io/badge/Functional_Requirements-FR--50+-6366f1?style=flat-square)]()
+[![Non-Functional](https://img.shields.io/badge/Non--Functional-NFR--20+-8b5cf6?style=flat-square)]()
+[![Accuracy](https://img.shields.io/badge/PII_Accuracy-99.30%25_F1-22c55e?style=flat-square)]()
+[![MCP](https://img.shields.io/badge/MCP_Tools-6_Governance_Tools-f59e0b?style=flat-square)]()
+[![Acceptance](https://img.shields.io/badge/Acceptance_Criteria-6_Scenarios-ec4899?style=flat-square)]()
+[![OpenMetadata](https://img.shields.io/badge/OpenMetadata-Native_Integration-FF6B6B?style=flat-square)](https://open-metadata.org)
 
 > Complete functional, non-functional, and regulatory requirements for Agies AI.
 

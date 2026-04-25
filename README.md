@@ -107,16 +107,17 @@ Agies AI is an **AI-powered governance engine** that plugs directly into OpenMet
 
 ## 📸 Screenshots
 
-<table>
-  <tr>
-    <td align="center"><img src="Docs/PII_block.png" alt="PII Block Decision" width="400"/><br/><sub><b>Real-time PII Query Block</b></sub></td>
-    <td align="center"><img src="Docs/Safe_query.png" alt="Safe Query Allow" width="400"/><br/><sub><b>Safe Query — Allowed</b></sub></td>
-  </tr>
-  <tr>
-    <td align="center"><img src="Docs/Data_catalog.png" alt="Data Catalog Scan" width="400"/><br/><sub><b>Catalog Scan — Risk Levels</b></sub></td>
-    <td align="center"><img src="Docs/compialence_ report.png" alt="Compliance Report" width="400"/><br/><sub><b>Board-Ready Compliance Report</b></sub></td>
-  </tr>
-</table>
+**PII Query Blocked — Risk Score 90 · DPDP Act 2023**
+![PII Block Decision](Docs/PII_block.png)
+
+**Safe Query — Allowed · No PII · No Regulatory Exposure**
+![Safe Query Allow](Docs/Safe_query.png)
+
+**Catalog Scan — 6 Fintech Tables · CRITICAL / HIGH / NONE Risk Levels**
+![Data Catalog Scan](Docs/Data_catalog.png)
+
+**Board-Ready Compliance Report — DPDP · GDPR · HIPAA · Penalty Exposure**
+![Compliance Report](Docs/compialence_%20report.png)
 
 ---
 
@@ -159,42 +160,66 @@ Our 6 MCP governance tools wrap all OpenMetadata interactions, exposing them to 
 
 ### 🔍 3-Layer AI PII Scanner
 
-```
-Layer 1 — Column Name Pattern Matching
-  Regex on column names: aadhaar_no, pan_card, dob, email, phone_number...
-  Fast O(n). Catches ~70% of obvious PII immediately.
-
-Layer 2 — Regulatory Regex Engine
-  Aadhaar:     \d{4}[\s-]?\d{4}[\s-]?\d{4}
-  PAN:         [A-Z]{5}[0-9]{4}[A-Z]{1}
-  IFSC:        [A-Z]{4}0[A-Z0-9]{6}
-  UPI:         [\w.\-_]+@[a-zA-Z]+
-  Credit Card: \b(?:\d[ -]?){13,16}\b
-  IBAN, SSN, Passport — 20+ patterns total
-
-Layer 3 — FAISS Semantic Search
-  ONNX all-MiniLM-L6-v2 embeddings (512-dim)
-  Precomputed PII concept vectors
-  Catches obfuscated/aliased columns: col_x, field_47, hashed_id
-  Semantic similarity threshold: 0.82
+```mermaid
+flowchart TD
+    subgraph Pipeline["3-Layer AI PII Engine"]
+        direction TB
+        L1["<b>Layer 1: Pattern Matching</b><br/>Fast O(n) regex on names<br/><i>aadhaar_no, pan_card, dob</i>"]
+        L2["<b>Layer 2: Regulatory Regex</b><br/>Data sample analysis<br/><i>Aadhaar, PAN, IFSC, UPI</i>"]
+        L3["<b>Layer 3: Semantic Search</b><br/>FAISS + ONNX all-MiniLM<br/><i>Catches: col_x, hashed_id</i>"]
+        
+        L1 -->|"Misses obfuscation"| L2
+        L2 -->|"Misses context"| L3
+    end
+    
+    classDef l1 fill:#0f172a,stroke:#3b82f6,stroke-width:2px,color:#fff,shadow:drop-shadow(0px 4px 6px rgba(0,0,0,0.3));
+    classDef l2 fill:#1e1b4b,stroke:#8b5cf6,stroke-width:2px,color:#fff,shadow:drop-shadow(0px 4px 6px rgba(0,0,0,0.3));
+    classDef l3 fill:#4c1d95,stroke:#ec4899,stroke-width:2px,color:#fff,shadow:drop-shadow(0px 4px 6px rgba(0,0,0,0.3));
+    classDef box fill:#020617,stroke:#334155,stroke-width:1px,color:#fff;
+    
+    class L1 l1;
+    class L2 l2;
+    class L3 l3;
+    class Pipeline box;
 ```
 
 ### ⚡ 11-Ring Governance Pipeline
 
 Every query runs through 11 analysis rings before a BLOCK/ALLOW decision:
 
-```
-Ring 1  → Session Context Analysis
-Ring 2  → Semantic Intent Classification
-Ring 3  → Entity Extraction (PII types mentioned)
-Ring 4  → Policy Rule Matching (DPDP, GDPR, HIPAA)
-Ring 5  → Risk Score Computation (0–100)
-Ring 6  → Regulation Citation
-Ring 7  → Causal Explanation Generation
-Ring 8  → Redaction Candidate Identification
-Ring 9  → LLM Contextual Analysis (Groq / LLaMA 4)
-Ring 10 → Final Decision (BLOCK / ALLOW / REDACT)
-Ring 11 → Audit Log Persistence (MongoDB)
+```mermaid
+flowchart LR
+    subgraph Rings ["11-Ring Governance Pipeline"]
+        direction TB
+        
+        subgraph Initial["Intent & Context"]
+            direction LR
+            R1(["1. Session"]) --> R2(["2. Intent"]) --> R3(["3. Entities"]) --> R4(["4. Policy"])
+        end
+        
+        subgraph Reasoning["Scoring & Explanation"]
+            direction LR
+            R5(["5. Score"]) --> R6(["6. Cite"]) --> R7(["7. Explain"]) --> R8(["8. Redact"])
+        end
+        
+        subgraph Action["Decision & Audit"]
+            direction LR
+            R9(["9. LLM Analysis"]) --> R10(["10. Decision"]) --> R11(["11. Audit DB"])
+        end
+        
+        Initial --> Reasoning --> Action
+    end
+    
+    classDef default fill:#0f172a,stroke:#475569,stroke-width:1px,color:#e2e8f0;
+    classDef intent fill:#1e3a8a,stroke:#3b82f6,stroke-width:2px,color:#fff;
+    classDef reason fill:#701a75,stroke:#d946ef,stroke-width:2px,color:#fff;
+    classDef act fill:#064e3b,stroke:#10b981,stroke-width:2px,color:#fff;
+    classDef box fill:#020617,stroke:#1e293b,stroke-width:2px,color:#fff;
+    
+    class R1,R2,R3,R4 intent;
+    class R5,R6,R7,R8 reason;
+    class R9,R10,R11 act;
+    class Rings box;
 ```
 
 ---
@@ -205,113 +230,104 @@ See full documentation → **[Docs/ARCHITECTURE.md](Docs/ARCHITECTURE.md)**
 
 ### System Architecture
 
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        AGIES AI — SYSTEM FLOW                       │
-├─────────────────────────────────────────────────────────────────────┤
-│                                                                      │
-│   User / AI Agent                                                    │
-│        │                                                             │
-│        ├─── Governance Query ──────────────────────────────────┐    │
-│        │    "Show me Aadhaar numbers..."                        │    │
-│        │                                                        ▼    │
-│        │                                          ┌────────────────┐ │
-│        │                                          │  11-Ring       │ │
-│        │                                          │  Pipeline      │ │
-│        │    ◄── BLOCK · Risk 90 · DPDP §4 ───────│  FastAPI       │ │
-│        │                                          └───────┬────────┘ │
-│        │                                                  │          │
-│        └─── Catalog Governance ──────────────────────────┤          │
-│             Click "Scan Catalog"                          │          │
-│                                                           ▼          │
-│                                              ┌────────────────────┐  │
-│                                              │  3-Layer PII       │  │
-│                                              │  Scanner           │  │
-│                                              │  Layer 1: Names    │  │
-│                                              │  Layer 2: Regex    │  │
-│                                              │  Layer 3: FAISS    │  │
-│                                              └──────────┬─────────┘  │
-│                                                         │            │
-│               ┌─────────────────────────────────────────┤           │
-│               │                 │                        │           │
-│               ▼                 ▼                        ▼           │
-│      ┌──────────────┐  ┌──────────────────┐  ┌────────────────────┐ │
-│      │ OpenMetadata │  │  MongoDB Atlas   │  │    Groq LLM        │ │
-│      │ Tag Writeback│  │  Audit Logs +    │  │   (LLaMA 4 Scout)  │ │
-│      │ PATCH /tables│  │  Scan History    │  │  Explanation Layer │ │
-│      └──────────────┘  └──────────────────┘  └────────────────────┘ │
-└─────────────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TD
+    User["<b>User / AI Agent</b><br/>Governance & Catalog Actions"]
+    
+    subgraph Platform["Agies AI Platform"]
+        direction TB
+        API["<b>FastAPI Engine</b><br/>11-Ring Governance Pipeline"]
+        Scanner["<b>3-Layer PII Scanner</b><br/>Regex + Semantic Search"]
+    end
+    
+    subgraph External["Ecosystem"]
+        direction LR
+        OM["<b>OpenMetadata</b><br/>Tag Writeback"]
+        Mongo["<b>MongoDB Atlas</b><br/>Audit & Scans"]
+        LLM["<b>Groq LLM</b><br/>Explanations"]
+    end
+    
+    User -- '"Show Aadhaar numbers..."' --> API
+    API -- "BLOCK · Risk 90 · DPDP §4" --> User
+    
+    User -- 'Click "Scan Catalog"' --> Scanner
+    Scanner --> OM
+    Scanner --> Mongo
+    API --> Mongo
+    API --> LLM
+    
+    classDef usr fill:#2563eb,stroke:#1d4ed8,stroke-width:2px,color:#fff;
+    classDef core fill:#059669,stroke:#047857,stroke-width:2px,color:#fff;
+    classDef ext fill:#d97706,stroke:#b45309,stroke-width:2px,color:#fff;
+    classDef box fill:#0f172a,stroke:#334155,stroke-width:2px,color:#fff;
+    
+    class User usr;
+    class API,Scanner core;
+    class OM,Mongo,LLM ext;
+    class Platform box;
 ```
 
 ### End-to-End AWS Deployment Architecture
 
-```
-  DEVELOPER MACHINE                        AWS CLOUD (us-east-1)
-  ─────────────────                        ──────────────────────────────────────────────────
-                                           │                                                │
-  1. docker build                          │  ┌──────────────────────────────────────────┐  │
-     ./backend          ──── docker ────►  │  │  ECR (Elastic Container Registry)        │  │
-                             push          │  │  696817466274.dkr.ecr.us-east-1           │  │
-                                           │  │  Repository: agies-open-meta-data:latest  │  │
-                                           │  └──────────────────┬───────────────────────┘  │
-                                           │                     │ docker pull               │
-                                           │                     ▼                           │
-  2. npm run build                         │  ┌──────────────────────────────────────────┐  │
-     frontend/          ──── aws s3 ────►  │  │  EC2: i-015b3f395ee3f1d74               │  │
-                             sync          │  │  Public IP: 52.5.166.248                 │  │
-                                           │  │                                          │  │
-  3. CloudFront                            │  │  ┌─────────────────────────────────────┐ │  │
-     invalidation        ──────────────►  │  │  │ Docker: chakra-backend              │ │  │
-     "/*"                                 │  │  │ FastAPI + Gunicorn · Port 8000      │ │  │
-                                           │  │  │ FAISS · ONNX · 11-Ring Pipeline    │ │  │
-                                           │  │  └─────────────────────────────────────┘ │  │
-                                           │  │  ┌─────────────────────────────────────┐ │  │
-                                           │  │  │ Docker: chakra-redis                │ │  │
-                                           │  │  │ redis:7-alpine · Port 6379          │ │  │
-                                           │  │  └─────────────────────────────────────┘ │  │
-                                           │  └──────────────────────────────────────────┘  │
-                                           │                                                │
-                                           │  ┌──────────────────────────────────────────┐  │
-                                           │  │  S3 Bucket: ages-ai-frontend             │  │
-                                           │  │  Static website hosting · React SPA dist │  │
-                                           │  └──────────────────────────────────────────┘  │
-                                           │                                                │
-                                           │  ┌──────────────────────────────────────────┐  │
-                                           │  │  CloudFront (E51JSAKEC4QL9) — FRONTEND   │  │
-                                           │  │  https://dnrvkokqdpg2n.cloudfront.net    │  │
-                                           │  │  Origin → S3 website endpoint            │  │
-                                           │  │  Cache: assets/* 1yr TTL                 │  │
-                                           │  └──────────────────────────────────────────┘  │
-                                           │                                                │
-                                           │  ┌──────────────────────────────────────────┐  │
-                                           │  │  CloudFront (E8DVT0NN727K6) — API        │  │
-                                           │  │  https://d23ikxcdm4p72j.cloudfront.net   │  │
-                                           │  │  Origin → EC2 :8000                      │  │
-                                           │  │  Cache: no-store on /api/*               │  │
-                                           │  │  TLS termination (HTTPS enforced)        │  │
-                                           │  └──────────────────────────────────────────┘  │
-                                           └────────────────────────────────────────────────┘
-                                                              │              │
-                                               ┌─────────────┘              └──────────────┐
-                                               ▼                                           ▼
-                                    ┌─────────────────────┐               ┌───────────────────────┐
-                                    │  MongoDB Atlas       │               │  Groq API (External)  │
-                                    │  (External Cloud DB) │               │  LLaMA 4 Scout 17B    │
-                                    │  Audit logs          │               │  Explanation layer    │
-                                    │  Scan history        │               └───────────────────────┘
-                                    └─────────────────────┘
-
-
-  END USER FLOW:
-  ─────────────
-  Browser → https://dnrvkokqdpg2n.cloudfront.net  (CloudFront E51 → S3 → React SPA)
-                 │
-                 │  API calls (HTTPS, no mixed content)
-                 ▼
-            https://d23ikxcdm4p72j.cloudfront.net/api/*  (CloudFront E8D → EC2:8000)
-                 │
-                 ▼
-            FastAPI Engine → FAISS + ONNX + MongoDB + Groq + OpenMetadata
+```mermaid
+flowchart TD
+    subgraph Dev["Developer Machine"]
+        direction TB
+        DB["docker build<br/>push"]
+        NB["npm run build<br/>aws s3 sync"]
+    end
+    
+    subgraph AWS["AWS Cloud (us-east-1)"]
+        direction TB
+        ECR["<b>ECR Registry</b><br/>agies-open-meta-data"]
+        
+        subgraph CloudFront["CDN Layer"]
+            CFF["<b>CloudFront (Frontend)</b><br/>E51JSAKEC4QL9"]
+            CFA["<b>CloudFront (API)</b><br/>E8DVT0NN727K6"]
+        end
+        
+        S3["<b>S3 Bucket</b><br/>ages-ai-frontend"]
+        
+        subgraph EC2["EC2 Instance"]
+            API["<b>Docker: chakra-backend</b><br/>FastAPI :8000"]
+            REDIS["<b>Docker: chakra-redis</b><br/>Redis :6379"]
+        end
+    end
+    
+    subgraph ThirdParty["External Services"]
+        Mongo[("MongoDB Atlas")]
+        Groq["Groq LLaMA 4 API"]
+    end
+    
+    User(("End User<br/>Browser"))
+    
+    DB -.->|"Push Image"| ECR
+    ECR -.->|"Pull"| EC2
+    NB -.->|"Sync Dist"| S3
+    
+    User -->|"HTTPS"| CFF
+    User -->|"API Calls"| CFA
+    
+    CFF -->|"Origin"| S3
+    CFA -->|"Origin"| API
+    
+    API <--> REDIS
+    API --> Mongo
+    API --> Groq
+    
+    classDef dev fill:#475569,stroke:#334155,stroke-width:2px,color:#fff;
+    classDef aws fill:#f59e0b,stroke:#b45309,stroke-width:2px,color:#fff;
+    classDef compute fill:#3b82f6,stroke:#1d4ed8,stroke-width:2px,color:#fff;
+    classDef store fill:#10b981,stroke:#047857,stroke-width:2px,color:#fff;
+    classDef user fill:#ec4899,stroke:#be185d,stroke-width:2px,color:#fff;
+    classDef bg fill:#0f172a,stroke:#1e293b,stroke-width:2px,color:#fff;
+    
+    class DB,NB dev;
+    class CFF,CFA,ECR aws;
+    class API,REDIS,Groq compute;
+    class S3,Mongo store;
+    class User user;
+    class AWS,CloudFront,EC2,ThirdParty bg;
 ```
 
 ---

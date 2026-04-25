@@ -4,6 +4,12 @@
 [![AWS](https://img.shields.io/badge/Deployed-AWS_us--east--1-FF9900?style=flat-square&logo=amazonaws)](https://aws.amazon.com)
 [![FastAPI](https://img.shields.io/badge/Backend-FastAPI_0.110-009688?style=flat-square&logo=fastapi)](https://fastapi.tiangolo.com)
 [![FAISS](https://img.shields.io/badge/AI-FAISS_Semantic_Search-blue?style=flat-square)](https://github.com/facebookresearch/faiss)
+[![React](https://img.shields.io/badge/Frontend-React_18_+_Vite-61DAFB?style=flat-square&logo=react)](https://react.dev)
+[![Docker](https://img.shields.io/badge/Containers-Docker_+_ECR-2496ED?style=flat-square&logo=docker)](https://docker.com)
+[![MongoDB](https://img.shields.io/badge/Database-MongoDB_Atlas-47A248?style=flat-square&logo=mongodb)](https://mongodb.com/atlas)
+[![Redis](https://img.shields.io/badge/Cache-Redis_7-DC382D?style=flat-square&logo=redis)](https://redis.io)
+[![CloudFront](https://img.shields.io/badge/CDN-CloudFront_+_S3-FF9900?style=flat-square&logo=amazonaws)]()
+[![WeMakeDevs](https://img.shields.io/badge/Hackathon-WeMakeDevs_×_OpenMetadata-f59e0b?style=flat-square)](https://www.wemakedevs.org/hackathons/openmetadata)
 
 > Full architecture reference for Agies AI — the AI-powered PII governance engine built on OpenMetadata.
 > Part of the **WeMakeDevs × OpenMetadata OUTATIME Hackathon 2026** submission.

@@ -3,6 +3,13 @@
 [![WeMakeDevs](https://img.shields.io/badge/Hackathon-WeMakeDevs_×_OpenMetadata-f59e0b?style=flat-square)](https://www.wemakedevs.org/hackathons/openmetadata)
 [![Category](https://img.shields.io/badge/T--06_Governance-+_T--01_MCP-10b981?style=flat-square)]()
 [![Status](https://img.shields.io/badge/Status-Production_Live-6366f1?style=flat-square)]()
+[![AI Engine](https://img.shields.io/badge/AI_Engine-3--Layer_PII_Scanner-8b5cf6?style=flat-square)]()
+[![Pipeline](https://img.shields.io/badge/Pipeline-11--Ring_Governance-ec4899?style=flat-square)]()
+[![Semantic AI](https://img.shields.io/badge/Semantic_AI-FAISS_+_ONNX-3b82f6?style=flat-square)](https://github.com/facebookresearch/faiss)
+[![LLM](https://img.shields.io/badge/LLM-Groq_LLaMA_4-000000?style=flat-square)](https://groq.com)
+[![Design](https://img.shields.io/badge/Design-Intelligence_over_Rules-f97316?style=flat-square)]()
+[![Regulations](https://img.shields.io/badge/Regulations-DPDP_·_GDPR_·_HIPAA_·_PCI-10b981?style=flat-square)]()
+[![OpenMetadata](https://img.shields.io/badge/Native-OpenMetadata_Tag_Writeback-FF6B6B?style=flat-square)](https://open-metadata.org)
 
 > Design decisions, principles, and rationale behind every major technical choice in Agies AI.
 
