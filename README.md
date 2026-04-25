@@ -107,17 +107,16 @@ Agies AI is an **AI-powered governance engine** that plugs directly into OpenMet
 
 ## 📸 Screenshots
 
-**PII Query Blocked — Risk Score 90 · DPDP Act 2023**
-![PII Block Decision](Docs/PII_block.png)
-
-**Safe Query — Allowed · No PII · No Regulatory Exposure**
-![Safe Query Allow](Docs/Safe_query.png)
-
-**Catalog Scan — 6 Fintech Tables · CRITICAL / HIGH / NONE Risk Levels**
-![Data Catalog Scan](Docs/Data_catalog.png)
-
-**Board-Ready Compliance Report — DPDP · GDPR · HIPAA · Penalty Exposure**
-![Compliance Report](Docs/compialence_%20report.png)
+<table>
+  <tr>
+    <td align="center"><img src="Docs/PII_block.png" alt="PII Block Decision" width="400"/><br/><sub><b>Real-time PII Query Block</b></sub></td>
+    <td align="center"><img src="Docs/Safe_query.png" alt="Safe Query Allow" width="400"/><br/><sub><b>Safe Query — Allowed</b></sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="Docs/Data_catalog.png" alt="Data Catalog Scan" width="400"/><br/><sub><b>Catalog Scan — Risk Levels</b></sub></td>
+    <td align="center"><img src="Docs/compialence_%20report.png" alt="Compliance Report" width="400"/><br/><sub><b>Board-Ready Compliance Report</b></sub></td>
+  </tr>
+</table>
 
 ---
 
@@ -172,9 +171,9 @@ flowchart TD
         L2 -->|"Misses context"| L3
     end
     
-    classDef l1 fill:#0f172a,stroke:#3b82f6,stroke-width:2px,color:#fff,shadow:drop-shadow(0px 4px 6px rgba(0,0,0,0.3));
-    classDef l2 fill:#1e1b4b,stroke:#8b5cf6,stroke-width:2px,color:#fff,shadow:drop-shadow(0px 4px 6px rgba(0,0,0,0.3));
-    classDef l3 fill:#4c1d95,stroke:#ec4899,stroke-width:2px,color:#fff,shadow:drop-shadow(0px 4px 6px rgba(0,0,0,0.3));
+    classDef l1 fill:#0f172a,stroke:#3b82f6,stroke-width:2px,color:#fff;
+    classDef l2 fill:#1e1b4b,stroke:#8b5cf6,stroke-width:2px,color:#fff;
+    classDef l3 fill:#4c1d95,stroke:#ec4899,stroke-width:2px,color:#fff;
     classDef box fill:#020617,stroke:#334155,stroke-width:1px,color:#fff;
     
     class L1 l1;
@@ -247,10 +246,10 @@ flowchart TD
         LLM["<b>Groq LLM</b><br/>Explanations"]
     end
     
-    User -- '"Show Aadhaar numbers..."' --> API
+    User -- "Show Aadhaar numbers..." --> API
     API -- "BLOCK · Risk 90 · DPDP §4" --> User
     
-    User -- 'Click "Scan Catalog"' --> Scanner
+    User -- "Click Scan Catalog" --> Scanner
     Scanner --> OM
     Scanner --> Mongo
     API --> Mongo
@@ -565,3 +564,4 @@ MIT License — see [LICENSE](LICENSE)
 *Agies AI — Because your data deserves governance, not just storage.*
 
 </div>
+
