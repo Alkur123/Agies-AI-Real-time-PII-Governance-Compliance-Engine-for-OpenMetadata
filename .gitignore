@@ -1,0 +1,45 @@
+# ── Secrets ──────────────────────────────────────────────────────────
+backend/.env
+frontend/.env
+*.env
+
+# ── Core Engine (proprietary — not open sourced) ─────────────────────
+backend/engine/
+backend/onnx_model/
+backend/precomputed_embeddings.npy
+backend/precomputed_labels.json
+backend/policy_dataset_loader.py
+
+# ── Internal session / demo files ────────────────────────────────────
+RECAP.md
+demo_script.html
+demo_script.pdf
+demo_script.srt
+.claude/
+
+# ── Python ───────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+dist/
+build/
+*.egg
+
+# ── Node / Frontend ───────────────────────────────────────────────────
+frontend/node_modules/
+frontend/dist/
+node_modules/
+
+# ── Docker ────────────────────────────────────────────────────────────
+*.log
+
+# ── OS ────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── IDE ───────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp

@@ -1,0 +1,142 @@
+# ── Chakravyuha-OpenMetadata Stack ───────────────────────────────
+# Lighter stack — PostgreSQL instead of MySQL+Elasticsearch
+# One command: docker-compose up -d
+#
+# UI  → http://localhost:8585  (admin / admin)
+# API → http://localhost:8000
+# Docs→ http://localhost:8000/docs
+
+services:
+
+  # ── Chakravyuha Governance Backend ──────────────────────────────
+  chakravyuha:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    env_file: ./backend/.env
+    environment:
+      - REDIS_URL=redis://redis:6379
+      - OM_HOST=http://openmetadata-server:8585
+      - OM_USERNAME=admin@openmetadata.org
+      - OM_PASSWORD=Admin@1234
+      - GUNICORN_WORKERS=2
+    depends_on:
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+    volumes:
+      - ./backend/precomputed_embeddings.npy:/app/precomputed_embeddings.npy:ro
+      - ./backend/precomputed_labels.json:/app/precomputed_labels.json:ro
+      - ./backend/onnx_model:/app/onnx_model:ro
+    networks:
+      - om-net
+
+  # ── Redis ────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 128mb --maxmemory-policy allkeys-lru
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - om-net
+
+  # ── PostgreSQL (for OpenMetadata) ────────────────────────────────
+  postgresql:
+    image: postgres:14
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: openmetadata_user
+      POSTGRES_PASSWORD: openmetadata_password
+      POSTGRES_DB: openmetadata_db
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U openmetadata_user -d openmetadata_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+    networks:
+      - om-net
+
+  # ── OpenMetadata Server ──────────────────────────────────────────
+  openmetadata-server:
+    image: docker.getcollate.io/openmetadata/server:1.4.7
+    restart: unless-stopped
+    ports:
+      - "8585:8585"
+      - "8586:8586"
+    environment:
+      # Database
+      DB_DRIVER_CLASS: "org.postgresql.Driver"
+      DB_SCHEME: "postgresql"
+      DB_USER: "openmetadata_user"
+      DB_USER_PASSWORD: "openmetadata_password"
+      DB_HOST: "postgresql"
+      DB_PORT: "5432"
+      OM_DATABASE: "openmetadata_db"
+      # Search — OpenSearch (config reads ELASTICSEARCH_* vars regardless of SEARCH_TYPE)
+      SEARCH_TYPE: "opensearch"
+      OPENSEARCH_HOST: "opensearch"
+      OPENSEARCH_PORT: "9200"
+      OPENSEARCH_SCHEME: "http"
+      ELASTICSEARCH_HOST: "opensearch"
+      ELASTICSEARCH_PORT: "9200"
+      ELASTICSEARCH_SCHEME: "http"
+      # Auth
+      AUTHENTICATION_PROVIDER: "basic"
+      AUTHENTICATION_PUBLIC_KEYS: "[http://localhost:8585/api/v1/system/config/jwks]"
+      AUTHENTICATION_AUTHORITY: "http://localhost:8585/api/v1/system/config/jwks"
+      AUTHENTICATION_CLIENT_ID: "open-metadata"
+      AUTHENTICATION_CALLBACK_URL: "http://localhost:8585/callback"
+      SERVER_HOST_API_URL: "http://localhost:8585"
+    depends_on:
+      postgresql:
+        condition: service_healthy
+      opensearch:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost:8585/"]
+      interval: 30s
+      timeout: 20s
+      retries: 10
+      start_period: 180s
+    networks:
+      - om-net
+
+  # ── OpenSearch (lighter than Elasticsearch) ──────────────────────
+  opensearch:
+    image: opensearchproject/opensearch:2.11.1
+    restart: unless-stopped
+    environment:
+      - discovery.type=single-node
+      - OPENSEARCH_JAVA_OPTS=-Xms512m -Xmx512m
+      - DISABLE_INSTALL_DEMO_CONFIG=true
+      - DISABLE_SECURITY_PLUGIN=true
+    volumes:
+      - os_data:/usr/share/opensearch/data
+    healthcheck:
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200/_cluster/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 10
+      start_period: 60s
+    networks:
+      - om-net
+
+volumes:
+  redis_data:
+  pg_data:
+  os_data:
+
+networks:
+  om-net:
+    driver: bridge
