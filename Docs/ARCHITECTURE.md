@@ -107,8 +107,8 @@ flowchart TD
     
     U1["Data Analyst<br/>/ Developer<br/>/ AI Agent"]
     
-    U1 -- '"Show Aadhaar numbers"' --> F1
-    F1 -- 'BLOCKED · Risk: 90' --> U1
+    U1 -- "Show Aadhaar numbers" --> F1
+    F1 -- "BLOCKED · Risk: 90" --> U1
     
     F1 -- "POST /api/analyze" --> Pipeline
     P3 --> DB1
